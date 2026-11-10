@@ -2,31 +2,61 @@
 
 using namespace std;
 
+int n,k;
+vector<int> diamonds;
+vector<int> problems;
+
+bool checker(){
+    for(int i=0;i<problems.size();i++){
+        if(problems[i]!=0){
+            return true;
+        }
+    }
+    return false;
+}
+void problemCounter(){
+    for(int i=0;i<problems.size();i++){
+        for(int j=i+1;j<problems.size();j++){
+            if(abs(diamonds[j]-diamonds[i])>k){
+                problems[i]+=1;
+                problems[j]+=1;
+            }
+        }
+    } 
+}
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-
+    
     freopen("diamond.in","r",stdin);
     freopen("diamond.out","w",stdout);
 
-    int n,k,maxDiamonds=0;
     cin >> n >> k;
-    vector<int> inputs(n);
-    for(int &i : inputs){
-        cin >> i;
-    }
+    diamonds.resize(n);
+    problems.resize(n);
     for(int i=0;i<n;i++){
-        int current=0,minimum=inputs.at(i)-k,maximum=inputs.at(i)+k;
-        for(int j=0;j<n;j++){
-            if(minimum<=inputs.at(j) && inputs.at(j)<=maximum){
-                current+=1;
-                minimum = max(minimum,inputs.at(j)-k);
-                maximum = min(maximum,inputs.at(j)+k);
-            }
-        }
-        maxDiamonds = max(maxDiamonds,current);
+        cin >> diamonds[i];
     }
-    cout << maxDiamonds;
+    sort(diamonds.begin(),diamonds.end());
+    
+    bool loop=true;
+    while(loop){
+        problemCounter();
+        loop=checker(); 
+        if(loop){
+        vector<int> sortedProblems = problems;
+        sort(sortedProblems.begin(),sortedProblems.end());
+        auto it = find(problems.begin(),problems.end(),sortedProblems.back());
+        int index = it - problems.begin();
+        diamonds.erase(diamonds.begin()+index); 
+        problems.erase(problems.begin()+index); 
+        fill(problems.begin(),problems.end(),0);
+        }
+    }
+    cout << diamonds.size();
+    
+    
 
+    
     return 0;
 }
