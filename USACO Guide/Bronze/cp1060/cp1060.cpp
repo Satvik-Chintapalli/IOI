@@ -9,20 +9,24 @@ int main(){
     int n,averageFlower=0;
     cin >> n;
     vector<int> input(n);
-    for(int i : input){
-        cin >> i;
+    vector<int> prefixSum(n+1);
+    for(int i=0;i<n;i++){
+        cin >> input[i];
+    }
+    prefixSum[0]=0;
+    for(int i=1;i<n+1;i++){
+        prefixSum[i]=prefixSum[i-1]+input[i-1];
     }
     for(int i=0;i<n;i++){
-        int sum=0;
-        bool loop=true;
         for(int j=i;j<n;j++){
-           sum+=input.at(j);
-           int average= (float)sum/(j-i+1);
-           for(int k=i;k<j;k++){
-              if(input.at(k)==average){
-                 averageFlower+=1;
-              }
-           }
+            int sum=prefixSum[j+1]-prefixSum[i];
+            float average= (float) sum/(j-i+1);
+            for(int k=i;k<=j;k++){
+                if(input[k]==average){
+                    averageFlower+=1;
+                    break;
+                }
+            }
         }
     }
     cout << averageFlower;
